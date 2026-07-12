@@ -16,7 +16,8 @@ C++로 밑바닥부터 짠 레이트레이서입니다. *Ray Tracing in One Week
 ## 결과 이미지
 
 <!-- 대표 이미지: diffuse + 감마 적용한 음영 있는 공 -->
-![diffuse](images/04_diffuse.png)
+<img width="599" height="335" alt="diffuse후" src="https://github.com/user-attachments/assets/0ae13387-1b79-43ee-ab23-ead4a941018d" />
+
 *diffuse(람베르시안) 재질 + 감마 보정. 바닥(거대한 구) 위에 놓인 매트한 공, 부드러운 음영과 그림자.*
 
 ### 단계별 진화
@@ -26,11 +27,12 @@ C++로 밑바닥부터 짠 레이트레이서입니다. *Ray Tracing in One Week
 | | |
 |---|---|
 | <img width="400" height="225" alt="image" src="https://github.com/user-attachments/assets/34be3074-8692-49ed-91c9-c54a9c664ba3" />
-① 배경 그라데이션 (뷰포트 + lerp)* | <img width="400" height="225" alt="image" src="https://github.com/user-attachments/assets/646eb4af-eb04-44b3-a183-88be598c740c" />
+*① 배경 그라데이션 (뷰포트 + lerp)* | 
+<img width="400" height="225" alt="image" src="https://github.com/user-attachments/assets/646eb4af-eb04-44b3-a183-88be598c740c" />
 *② 판별식 판정으로 그린 구* |
-| <img width="600" height="338" alt="안티앨리어싱 전" src="https://github.com/user-attachments/assets/8adfec60-89f4-47ab-ae95-93bfa8d4a1cf" />
- />
-*③ 표면 법선 시각화 (N → RGB)* |<img width="599" height="335" alt="diffuse후" src="https://github.com/user-attachments/assets/b229286f-a410-48e4-b11b-4ada944a44e0" />
+<img width="600" height="338" alt="안티앨리어싱 전" src="https://github.com/user-attachments/assets/8adfec60-89f4-47ab-ae95-93bfa8d4a1cf" />
+*③ 표면 법선 시각화 (N → RGB)* |
+<img width="599" height="335" alt="diffuse후" src="https://github.com/user-attachments/assets/b229286f-a410-48e4-b11b-4ada944a44e0" />
 *④ diffuse + 감마 (최종)* |
 
 ### 옵션: before / after 비교
