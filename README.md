@@ -26,14 +26,9 @@ C++로 밑바닥부터 짠 레이트레이서입니다. *Ray Tracing in One Week
 
 | | |
 |---|---|
-| <img width="400" height="225" alt="image" src="https://github.com/user-attachments/assets/34be3074-8692-49ed-91c9-c54a9c664ba3" /> |*① 배경 그라데이션 (뷰포트 + lerp)* | 
-<img width="400" height="225" alt="image" src="https://github.com/user-attachments/assets/646eb4af-eb04-44b3-a183-88be598c740c" /> |*② 판별식 판정으로 그린 구* |
-<img width="600" height="338" alt="안티앨리어싱 전" src="https://github.com/user-attachments/assets/8adfec60-89f4-47ab-ae95-93bfa8d4a1cf" /> |*③ 표면 법선 시각화 (N → RGB)* |
-<img width="599" height="335" alt="diffuse후" src="https://github.com/user-attachments/assets/b229286f-a410-48e4-b11b-4ada944a44e0" /> |*④ diffuse + 감마 (최종)* |
+| <img width="400" alt="배경 그라데이션" src="https://github.com/user-attachments/assets/34be3074-8692-49ed-91c9-c54a9c664ba3" /><br>*① 배경 그라데이션 (뷰포트 + lerp)* | <img width="400" alt="빨간 구" src="https://github.com/user-attachments/assets/646eb4af-eb04-44b3-a183-88be598c740c" /><br>*② 판별식 판정으로 그린 구* |
+| <img width="400" alt="법선 시각화" src="https://github.com/user-attachments/assets/8adfec60-89f4-47ab-ae95-93bfa8d4a1cf" /><br>*③ 표면 법선 시각화 (N → RGB)* | <img width="400" alt="diffuse 최종" src="https://github.com/user-attachments/assets/b229286f-a410-48e4-b11b-4ada944a44e0" /><br>*④ diffuse + 감마 (최종)* |
 
-### 옵션: before / after 비교
-
-이해한 내용을 시각적으로 보여주기 위한 비교 자료입니다.
 
 
 ## 지금까지 구현한 것
