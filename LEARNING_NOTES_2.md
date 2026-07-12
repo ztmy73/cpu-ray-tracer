@@ -1,47 +1,45 @@
 # 학습 노트 2 — 다중 객체부터 diffuse까지
 
-(이전 노트가 `hittable` 예습에서 끝났으니 그 다음부터. 구 여러 개 → 카메라/안티에일리어싱 → diffuse → 감마 순서로 실제 구현하면서 막힌 것들 정리.)
+(노트 1이 6번 hittable에서 끝났으니 이어서 7번부터. 구 여러 개 → 카메라/안티에일리어싱 → diffuse → 감마 순서로 실제 구현하면서 막힌 것들.)
 
 ---
 
-## 전체 구조 — 사실 수업 때 짠 거랑 같음
+## 7. 전체 구조 — 사실 수업 때 짠 거랑 같음
 
 컴그 수업에서 "광선마다 sphere 리스트 돌면서 부딪히나 검사하고, 가장 가까운 거 고르기"를 짰었는데,
-RTIOW도 알고리즘은 완전히 똑같다. 다만 그걸 세 조각으로 나눴을 뿐:
+RTIOW도 알고리즘은 완전히 똑같음. 다만 그걸 세 조각으로 나눴을 뿐:
 
 - `sphere::hit` — "나(구 하나) 이 광선에 맞아?" 판별식 풀고 맞으면 정보 채움. **자기 하나만** 앎.
-- `hittable_list::hit` — "내 리스트의 모든 물체 중 가장 가까운 건?" for로 순회 + `closest_so_far`로 최근접 고름. → **이게 수업 때 짠 그 for 루프.**
+- `hittable_list::hit` — "내 리스트의 모든 물체 중 가장 가까운 건?" for로 순회 + `closest_so_far`로 최근접. → **이게 수업 때 짠 그 for 루프.**
 - `hittable` — 위 둘의 공통 인터페이스(추상).
 
-수업 때 "이 구 맞나?"랑 "이게 제일 먼저 맞나?"가 한 덩어리로 엉켜서 찜찜했는데,
+수업 땐 "이 구 맞나?"랑 "이게 제일 먼저 맞나?"가 한 덩어리로 엉켜서 찜찜했는데,
 여기선 sphere가 "맞나?"만, list가 "가장 가까운가?"만 담당하게 분리돼서 깔끔해짐.
 
 **`hittable_list`도 `hittable`을 상속**한다는 게 포인트. 그래서 `ray_color`는 `world.hit()` 하나만 부르면 됨.
-world가 구 1개든 100개든 신경 안 씀. **물체 하나여도 리스트에 넣는다** — 인터페이스를 하나로 고정하려고.
+world가 구 1개든 100개든 신경 안 씀. **물체 하나여도 리스트에 넣음** — 인터페이스를 하나로 고정하려고.
 (리스트도 hittable이라, 나중에 리스트 안에 리스트 넣는 식으로 BVH 트리까지 확장되는 씨앗. 지금은 안 씀.)
 
 ---
 
-## hit_record는 어떻게 전달되나
+## 8. hit_record는 어떻게 전달되나
 
-`hit`은 `bool`만 반환한다(맞았냐/아니냐). 실제 정보(교차점 `p`, 법선 `normal`, `t`, `front_face`)는
-`hit_record& rec`을 **참조로 받아서 함수 안에서 채운다.** `operator+=`에서 참조로 원본 고치던 거랑 같은 패턴.
+`hit`은 `bool`만 반환(맞았냐/아니냐). 실제 정보(교차점 `p`, 법선 `normal`, `t`, `front_face`)는
+`hit_record& rec`을 **참조로 받아서 함수 안에서 채움.** `operator+=`에서 참조로 원본 고치던 거랑 같은 패턴.
 호출하는 쪽이 빈 `hit_record`를 만들어 넘기면, `hit`이 그 안을 채워주는 방식.
-
 `normal`은 따로 떠도는 변수가 아니라 `rec`의 멤버 한 칸(`rec.normal`)이다. 여기서 잠깐 헷갈렸음.
 
 ### rec은 광선당 하나. 구 개수랑 무관.
-
 - `rec` — `ray_color`가 광선 하나당 하나 만듦. 최종 승자 자리.
 - `temp_rec` — 리스트 for 루프 안, 각 구가 매번 덮어쓰는 후보 그릇.
 
-구가 100개여도 `hit_record`는 **딱 2개**(rec, temp_rec)만 존재하고 재사용함.
+구가 100개여도 `hit_record`는 **딱 2개**(rec, temp_rec)만 존재하고 재사용.
 `temp_rec`을 따로 두는 이유: 구 하나 검사한 결과를 바로 `rec`에 쓰면, 나중에 더 먼 구가 `rec`을 덮어써서
 좋은 정보를 날림. 그래서 임시로 받고 "더 가까울 때만" `rec`으로 옮김. (후보 → 검증 → 커밋. 트랜잭션 느낌.)
 
 ---
 
-## sphere::hit 짜면서 낸 버그 3개 (기록용, 다 배울 만했음)
+## 9. sphere::hit 짜면서 낸 버그 3개 (기록용, 다 배울 만했음)
 
 `hit_sphere`의 판별식 로직을 클래스 안 `hit`으로 옮기면서 낸 실수들.
 
@@ -69,18 +67,17 @@ rec.p = r.at(root);                      // ← 이 root는 바깥(첫 근). 두
 안쪽 `if`에서 `auto root`로 또 선언하면 **새 변수**가 됨(이름만 같음). `}` 나가면 사라짐.
 그래서 두 번째 근을 제대로 계산해놓고도 그걸 못 쓰고 첫 근(범위 밖)으로 rec 채움.
 → 안쪽에서 `auto` 빼고 그냥 `root = ...`로 **대입**. 바깥 root 갱신.
-
 `auto root`(새 변수) vs `root`(기존에 대입) — 이 차이가 핵심. 컴파일러가 안 잡아주는 버그라 제일 조심.
 
 ### 섀도잉 원리 (수업 때 느낌으로만 알던 거 확실히)
-안쪽 블록 변수는 그 블록 진입할 때 스택에 잡히고 `}`에서 되감기며 사라진다.
+안쪽 블록 변수는 그 블록 진입할 때 스택에 잡히고 `}`에서 되감기며 사라짐.
 이름 찾기는 항상 "가장 안쪽 스코프 → 바깥"으로 훑어서, 안쪽에 같은 이름 있으면 거기서 멈춤(바깥 가림).
-안쪽이 소멸하면 그 이름 없어지니 다시 바깥에서 찾음. → 버그 2번의 정체가 이거였음.
+안쪽이 소멸하면 그 이름 없어지니 다시 바깥에서 찾음. → 버그 3번의 정체가 이거.
 두 번째 근이 틀리게 계산된 게 아니라, **계산 결과가 스택과 함께 증발해서 도달을 못 한** 버그.
 
 ---
 
-## hittable_list for 루프 — 여기서도 삽질
+## 10. hittable_list for 루프 — 여기서도 삽질
 
 ```cpp
 for (const auto& object : objects) {
@@ -93,19 +90,17 @@ for (const auto& object : objects) {
 ```
 
 처음에 `closest_so_far`에 거리(`length()`)를 계산해서 넣으려다 틀림. 이유 두 개:
-
 - `closest_so_far`는 `ray_tmax` 자리에 들어가서 `sphere::hit` 안에서 `t`랑 비교됨. 그러니 **t 단위**여야 함.
   근데 우리 광선은 방향을 정규화 안 해서(`pixel_center - camera_center` 그대로) **t ≠ 실제 거리**. length 넣으면 스케일 안 맞음.
 - `rec.p`를 쓰려 했는데, `rec`은 그 아래 줄 `rec = temp_rec`에서야 갱신됨. 방금 맞은 정보는 `temp_rec`에 있음.
 
 → `t`는 이미 `sphere::hit`이 `temp_rec.t`에 계산해뒀으니 **그냥 재활용**. 거리 새로 구할 필요 없음(sqrt도 안 함).
 "필요한 값이 이미 계산돼 있진 않나?" 먼저 보는 습관. 픽셀마다 수백만 번 도는 코드라 sqrt 하나가 쌓임.
-
 `object->`인 이유: objects가 포인터(shared_ptr)라서. `virtual` 덕에 각자 실제 타입(sphere)의 hit이 불림.
 
 ---
 
-## main / 장면 구성
+## 11. main / 장면 구성
 
 ```cpp
 world.add(make_shared<sphere>(point3(0, 0, -1), 0.5));       // 가운데 구
@@ -120,7 +115,7 @@ world.add(make_shared<sphere>(point3(0, -100.5, -1), 100));  // 바닥
 
 ---
 
-## 상속 / virtual 다시 정리 (vtable까지)
+## 12. 상속 / virtual 다시 정리 (vtable까지)
 
 - 부모(`hittable`) = 계약만 선언(`= 0`, 순수 가상). 자식(`sphere`) = 구체적 구현. 매개변수 다 똑같이(끝 const까지).
 - `virtual`: `hittable*` 포인터로 불러도 **실제 가리키는 객체(sphere)의 hit**이 불리게 하는 스위치.
@@ -134,7 +129,7 @@ world.add(make_shared<sphere>(point3(0, -100.5, -1), 100));  // 바닥
 
 ---
 
-## camera 클래스 + 안티에일리어싱
+## 13. camera 클래스 + 안티에일리어싱
 
 main에 흩어져 있던 뷰포트 계산/렌더 루프를 `camera`로 캡슐화. main은 world + 카메라 설정만 갖고 `cam.render(world)`.
 
@@ -158,7 +153,7 @@ write_color(out, pixel_samples_scale * pixel_color);  // 1/samples 곱해 평균
 
 ---
 
-## rtweekend.h — 공용 헤더
+## 14. rtweekend.h — 공용 헤더
 
 `infinity`, `random_double`, `pi` 등 여기저기서 쓰는 유틸을 한 곳에 모음.
 **`rtweekend.h`가 `vec3.h`/`ray.h`를 include하고, 나머지 헤더(camera, sphere 등)는 `rtweekend.h`를 include**하는 구조.
@@ -171,7 +166,7 @@ inline double random_double() { return std::rand() / (RAND_MAX + 1.0); }  // [0,
 
 ---
 
-## diffuse — 여기가 목표였던 "레이트레이서다운 이미지"
+## 15. diffuse — 여기가 목표였던 "레이트레이서다운 이미지"
 
 **diffuse = 거친 무광 표면**(벽, 종이, 흙). 매끈한 거울이 한 방향 반사라면, diffuse는 미세 요철 때문에 빛이 사방으로 흩어짐.
 그걸 "랜덤 방향 반사"로 근사.
@@ -208,7 +203,7 @@ color ray_color(const ray& r, int depth, const hittable& world) const {
 
 ---
 
-## random_unit_vector — 왜 구 안만 채택하나 (rejection method)
+## 16. random_unit_vector — 왜 구 안만 채택하나 (rejection method)
 
 diffuse 튕김은 **모든 방향이 공평한** 랜덤이어야 함. 특정 방향이 더 자주 나오면 음영이 부자연스러움.
 
@@ -237,7 +232,7 @@ inline vec3 random_unit_vector() {
 
 ---
 
-## 감마 보정 — 결과가 어두운 이유
+## 17. 감마 보정 — 결과가 어두운 이유
 
 diffuse 돌리면 이미지가 예상보다 어두운데 버그 아님.
 우리가 계산한 색은 **선형**(0.5 = 빛의 양 절반). 근데 모니터는 입력을 **비선형(대략 제곱)**으로 어둡게 출력함.
