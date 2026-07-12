@@ -106,12 +106,13 @@ for (const auto& object : objects) {
 world.add(make_shared<sphere>(point3(0, 0, -1), 0.5));       // 가운데 구
 world.add(make_shared<sphere>(point3(0, -100.5, -1), 100));  // 바닥
 ```
-
+<img width="600" height="338" alt="안티앨리어싱 전" src="https://github.com/user-attachments/assets/4c3e0a11-15d8-4a85-bf00-35e97926a0e0" />
 - **바닥 트릭**: 반지름 100짜리 거대한 구를 아래(`y=-100.5`)에 둠. 표면 꼭대기가 `y=-0.5` 근처.
   너무 커서 곡률이 안 느껴져 **평면처럼** 보임. 진짜 평면 클래스 안 만들고 큰 구로 바닥 흉내.
 - `world.hit(r, 0, infinity, rec)`: `0`이 카메라 뒤(`t<0`) 거름. sphere에서 못 걸렀던 문제 여기서 해결.
 - **바닥이 연두색인 이유** (버그 아님): 바닥 표면 법선이 거의 위(0,1,0) →
   `0.5*((0,1,0)+(1,1,1)) = (0.5, 1.0, 0.5)` → G 최대 = 연두. 정상.
+
 
 ---
 
@@ -147,6 +148,7 @@ for (sample) {
 }
 write_color(out, pixel_samples_scale * pixel_color);  // 1/samples 곱해 평균
 ```
+<img width="596" height="335" alt="안티앨리어싱 후" src="https://github.com/user-attachments/assets/be7b2998-933d-4498-b7a5-a3210f4ad0e1" />
 
 - `get_ray`가 `sample_square()`로 `[-0.5, 0.5)` 오프셋 줘서 `(i + offset)`이 픽셀 영역 안 랜덤 지점.
 - samples 늘리면(50, 100) 더 매끈해지지만 그만큼 느려짐. 10이면 충분.
@@ -249,6 +251,7 @@ inline double linear_to_gamma(double x) {
 ```
 
 이거 넣으면 회색 공이 눈에 띄게 밝아지고 음영이 자연스러워짐. → 목표 이미지 완성.
+<img width="599" height="335" alt="diffuse후" src="https://github.com/user-attachments/assets/46e37639-6482-4b66-b1ba-fcc99e9cc405" />
 
 ---
 
