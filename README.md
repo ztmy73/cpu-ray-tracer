@@ -40,7 +40,7 @@ images/
 
 ## 빌드 & 실행
 
-CUDA가 아니라 **순수 C++**입니다. `g++`만 있으면 됩니다.
+CUDA가 아니라 순수 C++입니다. `g++`만 있으면 됩니다.
 
 ```bash
 g++ -std=c++17 -o main main.cpp
