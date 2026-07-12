@@ -25,22 +25,18 @@ C++로 밑바닥부터 짠 레이트레이서입니다. *Ray Tracing in One Week
 
 | | |
 |---|---|
-| ![gradient](images/01_gradient.png)<br>*① 배경 그라데이션 (뷰포트 + lerp)* | ![red sphere](images/02_red_sphere.png)<br>*② 판별식 판정으로 그린 구* |
-| ![normals](images/03_normals.png)<br>*③ 표면 법선 시각화 (N → RGB)* | ![diffuse](images/04_diffuse.png)<br>*④ diffuse + 감마 (최종)* |
+| <img width="400" height="225" alt="image" src="https://github.com/user-attachments/assets/34be3074-8692-49ed-91c9-c54a9c664ba3" />
+① 배경 그라데이션 (뷰포트 + lerp)* | <img width="400" height="225" alt="image" src="https://github.com/user-attachments/assets/646eb4af-eb04-44b3-a183-88be598c740c" />
+*② 판별식 판정으로 그린 구* |
+| <img width="600" height="338" alt="안티앨리어싱 전" src="https://github.com/user-attachments/assets/8adfec60-89f4-47ab-ae95-93bfa8d4a1cf" />
+ />
+*③ 표면 법선 시각화 (N → RGB)* |<img width="599" height="335" alt="diffuse후" src="https://github.com/user-attachments/assets/b229286f-a410-48e4-b11b-4ada944a44e0" />
+*④ diffuse + 감마 (최종)* |
 
 ### 옵션: before / after 비교
 
 이해한 내용을 시각적으로 보여주기 위한 비교 자료입니다.
 
-| | |
-|---|---|
-| ![aa off](images/aa_1spp.png)<br>*안티에일리어싱 전 (1 spp) — 경계 계단* | ![aa on](images/aa_10spp.png)<br>*후 (10 spp) — 경계 부드러움* |
-| ![gamma off](images/gamma_off.png)<br>*감마 보정 전 — 어두움* | ![gamma on](images/gamma_on.png)<br>*후 — 자연스러운 밝기* |
-
-> `images/` 폴더를 만들고 위 파일명대로 이미지를 넣으면 링크가 활성화됩니다.
-> before/after 이미지가 없으면 해당 표는 지워도 됩니다.
-
----
 
 ## 지금까지 구현한 것
 
